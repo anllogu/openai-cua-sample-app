@@ -1,9 +1,9 @@
-# Computer Using Agent Sample App
+# Computer Using Agent Sample App with Claude Support
 
-Get started building a [Computer Using Agent (CUA)](https://platform.openai.com/docs/guides/tools-computer-use) with the OpenAI API.
+Get started building a Computer Using Agent (CUA) with either Claude from Anthropic or the original [OpenAI CUA API](https://platform.openai.com/docs/guides/tools-computer-use).
 
 > [!CAUTION]  
-> Computer use is in preview. Because the model is still in preview and may be susceptible to exploits and inadvertent mistakes, we discourage trusting it in authenticated environments or for high-stakes tasks.
+> Computer use is in preview. Because the models may be susceptible to exploits and inadvertent mistakes, we discourage trusting them in authenticated environments or for high-stakes tasks.
 
 ## Set Up & Run
 
@@ -15,14 +15,30 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+### API Key Setup
+
+Create a `.env` file in the root directory with your API key:
+
+```
+# For Claude (default)
+ANTHROPIC_API_KEY=your_key_here
+
+# For original OpenAI CUA
+# OPENAI_API_KEY=your_key_here
+```
+
 Run CLI to let CUA use a local browser window, using [playwright](https://playwright.dev/). (Stop with CTRL+C)
 
 ```shell
+# Run with Claude (default)
 python cli.py --computer local-playwright
-```
 
-> [!NOTE]  
-> The first time you run this, if you haven't used Playwright before, you will be prompted to install dependencies. Execute the command suggested, which will depend on your OS.
+# Specify a particular Claude model
+python cli.py --computer local-playwright --model claude-3-sonnet-20240229
+
+# Run with original OpenAI model
+python cli.py --computer local-playwright --model computer-use-preview
+```
 
 Other included sample [computer environments](#computer-environments):
 
@@ -33,9 +49,9 @@ Other included sample [computer environments](#computer-environments):
 
 ## Overview
 
-The computer use tool and model are available via the [Responses API](https://platform.openai.com/docs/api-reference/responses). At a high level, CUA will look at a screenshot of the computer interface and recommend actions. Specifically, it sends `computer_call`(s) with `actions` like `click(x,y)` or `type(text)` that you have to execute on your environment, and then expects screenshots of the outcomes.
+Originally, the computer use tool was only available via OpenAI's [Responses API](https://platform.openai.com/docs/api-reference/responses). This adaptation allows you to use Claude models from Anthropic as well. At a high level, both models will look at a screenshot of the computer interface and recommend actions. Specifically, they send `computer_call`(s) with `actions` like `click(x,y)` or `type(text)` that you have to execute on your environment, and then expect screenshots of the outcomes.
 
-You can learn more about this tool in the [Computer use guide](https://platform.openai.com/docs/guides/tools-computer-use).
+You can learn more about OpenAI's computer use tool in their [Computer use guide](https://platform.openai.com/docs/guides/tools-computer-use). For Claude, you can find more information about Anthropic's API at [Anthropic's documentation](https://docs.anthropic.com/).
 
 ## Abstractions
 
@@ -55,22 +71,32 @@ The CLI (`cli.py`) is the easiest way to get started with CUA. It accepts the fo
 - `--debug`: Enable debug mode.
 - `--show`: Show images (screenshots) during the execution.
 - `--start-url`: Start the browsing session with a specific URL (only for browser environments). By default, the CLI will start the browsing session with `https://bing.com`.
+- `--model`: Choose which model to use. Options are:
+  - `claude-3-opus-20240229` (default)
+  - `claude-3-sonnet-20240229` 
+  - `computer-use-preview` (original OpenAI model)
 
 ### Run examples (optional)
 
 The `examples` folder contains more examples of how to use CUA.
 
 ```shell
+# Run original OpenAI example
 python -m examples.weather_example
+
+# Run Claude-specific example
+python -m examples.claude_example
 ```
 
-For reference, the file `simple_cua_loop.py` implements the basics of the CUA loop.
+For reference, the file `simple_cua_loop.py` implements the basics of the CUA loop. This has been updated to use Claude by default.
 
 You can run it with:
 
 ```shell
 python simple_cua_loop.py
 ```
+
+To switch back to the OpenAI model, edit `simple_cua_loop.py` and change the model from `claude-3-opus-20240229` to `computer-use-preview`.
 
 ## Computer Environments
 

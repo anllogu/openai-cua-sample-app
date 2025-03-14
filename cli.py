@@ -54,6 +54,13 @@ def main():
         help="Start the browsing session with a specific URL (only for browser environments).",
         default="https://bing.com",
     )
+    parser.add_argument(
+        "--model",
+        type=str,
+        choices=["claude-3-opus-20240229", "claude-3-sonnet-20240229", "computer-use-preview"],
+        help="Choose the model to use for the agent.",
+        default="claude-3-opus-20240229",
+    )
     args = parser.parse_args()
 
     computer_mapping = {
@@ -68,16 +75,11 @@ def main():
 
     with ComputerClass() as computer:
         agent = Agent(
+            model=args.model,
             computer=computer,
             acknowledge_safety_check_callback=acknowledge_safety_check_callback,
         )
         items = []
-
-
-        if args.computer in ["browserbase", "local-playwright"]:
-            if not args.start_url.startswith("http"):
-                args.start_url = "https://" + args.start_url
-            agent.computer.goto(args.start_url)
 
         while True:
             user_input = args.input or input("> ")

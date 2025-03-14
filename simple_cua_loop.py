@@ -72,7 +72,7 @@ def main():
 
             while True:  # keep looping until we get a final response
                 response = create_response(
-                    model="computer-use-preview",
+                    model="claude-3-opus-20240229",
                     input=items,
                     tools=tools,
                     truncation="auto",
