@@ -1,4 +1,5 @@
 import argparse
+import platform
 from agent.agent import Agent
 from computers import (
     BrowserbaseBrowser,
@@ -7,6 +8,10 @@ from computers import (
     LocalPlaywrightComputer,
     DockerComputer,
 )
+
+# Importamos Windows11Computer si estamos en Windows
+if platform.system() == "Windows":
+    from computers import Windows11Computer
 
 
 def acknowledge_safety_check_callback(message: str) -> bool:
@@ -20,15 +25,23 @@ def main():
     parser = argparse.ArgumentParser(
         description="Select a computer environment from the available options."
     )
+    
+    # Lista de opciones de entorno de computadora
+    computer_choices = [
+        "local-playwright",
+        "docker",
+        "browserbase",
+        "scrapybara-browser",
+        "scrapybara-ubuntu",
+    ]
+    
+    # Agregar la opción de Windows 11 si estamos en Windows
+    if platform.system() == "Windows":
+        computer_choices.append("windows11")
+    
     parser.add_argument(
         "--computer",
-        choices=[
-            "local-playwright",
-            "docker",
-            "browserbase",
-            "scrapybara-browser",
-            "scrapybara-ubuntu",
-        ],
+        choices=computer_choices,
         help="Choose the computer environment to use.",
         default="local-playwright",
     )
@@ -70,6 +83,10 @@ def main():
         "scrapybara-browser": ScrapybaraBrowser,
         "scrapybara-ubuntu": ScrapybaraUbuntu,
     }
+    
+    # Agregar Windows11Computer al mapeo si estamos en Windows
+    if platform.system() == "Windows":
+        computer_mapping["windows11"] = Windows11Computer
 
     ComputerClass = computer_mapping[args.computer]
 

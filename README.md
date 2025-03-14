@@ -122,6 +122,7 @@ This sample app provides a set of implemented `Computer` examples, but feel free
 | `Browserbase`       | browserbase        | `browser` | Remote browser environment        | [Browserbase](https://www.browserbase.com/) API key in `.env`    |
 | `ScrapybaraBrowser` | scrapybara-browser | `browser` | Remote browser environment        | [Scrapybara](https://scrapybara.com/dashboard) API key in `.env` |
 | `ScrapybaraUbuntu`  | scrapybara-ubuntu  | `linux`   | Remote Ubuntu desktop environment | [Scrapybara](https://scrapybara.com/dashboard) API key in `.env` |
+| `Windows11Computer` | windows11          | `windows` | Windows 11 desktop environment    | Windows 11, PyAutoGUI, PyWin32 (available when running on Windows) |
 
 Using the CLI, you can run the sample app with different computer environments using the options listed above:
 
@@ -165,7 +166,35 @@ docker run --rm -it --name cua-sample-app -p 5900:5900 --dns=1.1.1.3 -e DISPLAY=
 ### Hosted environment setup
 
 This repository contains example implementations of third-party hosted environments.
-To use these, you will need to set up an account with the service by following the links aboveand add your API key to the `.env` file.
+To use these, you will need to set up an account with the service by following the links above and add your API key to the `.env` file.
+
+### Windows 11 Desktop Setup
+
+If you're running on Windows 11, you can use the `windows11` computer option to control the entire desktop environment:
+
+```shell
+python cli.py --show --computer windows11
+```
+
+**Important Considerations for Windows 11 Desktop Use:**
+
+1. **Installation Requirements**: 
+   - Install required packages: `pip install pyautogui pywin32`
+   - These are included in requirements.txt with Windows-specific conditionals
+
+2. **Safety Measures**:
+   - PyAutoGUI has a "failsafe" feature: move your mouse to the top-left corner (0,0) to abort execution
+   - Consider closing or minimizing non-essential applications before running
+   - The agent has full system access, so be mindful of the tasks you request
+
+3. **Optimal Use**:
+   - For best results, use a clean desktop with minimal background applications
+   - Higher resolution displays provide more space for the agent to operate
+   - Some applications may have security features that prevent automated control
+
+4. **Privacy Considerations**:
+   - Screenshots of your entire desktop will be sent to the AI model
+   - Ensure no sensitive information is visible during execution
 
 ## Function Calling
 
